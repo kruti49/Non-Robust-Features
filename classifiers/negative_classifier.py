@@ -15,7 +15,7 @@ import sys
 from .models import *
 
 learning_rate = 0.001
-file_name = 'training_with_robust_dataset'
+file_name = 'training_with_zero_robust_dataset'
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
