@@ -70,7 +70,7 @@ train_dataset = torchvision.datasets.CIFAR10(root='./data', train=True, download
 test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
 
 #Dataloader
-test_loader = torch.utils.data.DataLoader(train_dataset, batch_size=200, shuffle=True, num_workers=4)
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=200, shuffle=True, num_workers=4)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=100, shuffle=False, num_workers=4)
 
 #model
@@ -154,7 +154,7 @@ def test(epoch):
         }
         if not os.path.isdir('checkpoint'):
             os.mkdir('checkpoint')
-        torch.save(state, './checkpoint/nonrobustckpt.pth')
+        torch.save(state, './checkpoint/robustckpt.pth')
         best_acc = acc
 
 #Decaying Learning rate
