@@ -112,7 +112,7 @@ def train(epoch):
             print('\nCurrent training batch:', str(batch_idx))
 
     print('\nTrain Accuarcy:', 100. *correct / total)
-    print('\nTrain Loss:', train_loss / total)
+    print('\nTrain Loss:', train_loss)
 
 def test(epoch):
     global best_acc
