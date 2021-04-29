@@ -74,7 +74,7 @@ train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=200, shuffl
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=100, shuffle=False, num_workers=4)
 
 #model
-model = ResNet18()
+model = ResNet50()
 model = model.to(device)
 model = torch.nn.DataParallel(model)
 cudnn.benchmark = True
