@@ -148,9 +148,9 @@ def test(epoch):
             'acc': acc,
             'epoch': epoch,
         }
-        if not os.path.isdir('/content/drive/MyDrive/Colab Notebooks/GT Project/checkpoint'):
-            os.mkdir('/content/drive/MyDrive/Colab Notebooks/GT Project/checkpoint')
-        torch.save(state, '/content/drive/MyDrive/Colab Notebooks/GT Project/checkpoint/nonrobustckpt.pth')
+        if not os.path.isdir('checkpoint'):
+            os.mkdir('checkpoint')
+        torch.save(state, './checkpoint/nonrobustckpt.pth')
         best_acc = acc
 
 #Decaying Learning rate
