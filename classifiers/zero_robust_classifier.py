@@ -15,7 +15,7 @@ import sys
 from .models import *
 
 learning_rate = 0.001
-file_name = 'training_with_robust_dataset'
+file_name = 'training_with_zero_robust_dataset'
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -29,18 +29,11 @@ args, unknown = parser.parse_known_args()
 best_acc = 0  # best test accuracy
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 
-#Data Augmentation
-normalize = transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
-
 transform_train = transforms.Compose([
-    transforms.RandomHorizontalFlip(),
-    transforms.RandomCrop(32, 4),
     transforms.ToTensor(),
-    normalize,
 ])
 transform_test = transforms.Compose([
     transforms.ToTensor(),
-    normalize,
 ])
 
 #convert into Tensor dataset
@@ -65,13 +58,13 @@ class TensorDataset(Dataset):
 
 #Load dataset
 data_path = "./datasets/zero_robust_CIFAR"
-test_data = ch.cat(ch.load(os.path.join(data_path, f"CIFAR_ims")))
-test_labels = ch.cat(ch.load(os.path.join(data_path, f"CIFAR_lab")))
-train_dataset = TensorDataset(test_data, test_labels, transform=transform_train)
+train_data = ch.cat(ch.load(os.path.join(data_path, f"CIFAR_ims")))
+train_labels = ch.cat(ch.load(os.path.join(data_path, f"CIFAR_lab")))
+train_dataset = TensorDataset(train_data, train_labels, transform=transform_train)
 test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
 
 #Dataloader
-test_loader = torch.utils.data.DataLoader(train_dataset, batch_size=200, shuffle=True, num_workers=4)
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=200, shuffle=True, num_workers=4)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=100, shuffle=False, num_workers=4)
 
 #model
@@ -119,7 +112,7 @@ def train(epoch):
             print('\nCurrent training batch:', str(batch_idx))
 
     print('\nTrain Accuarcy:', 100. *correct / total)
-    print('\nTrain Loss:', train_loss / total)
+    print('\nTrain Loss:', train_loss)
 
 def test(epoch):
     global best_acc
