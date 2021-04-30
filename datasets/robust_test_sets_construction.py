@@ -16,7 +16,6 @@ from tqdm import tqdm, tqdm_notebook
 import matplotlib.pyplot as plt
 from robustness import model_utils, datasets
 from robustness.tools.vis_tools import show_image_row, show_image_column
-from torchvision.utils import save_image
 %matplotlib inline
 
 DATA_PATH_DICT = {'CIFAR': './cifar10'}
@@ -85,7 +84,7 @@ def inversion_loss(model, inp, targ):
 # PGD parameters
 kwargs = {
     'custom_loss': inversion_loss,
-    'constraint':'2',
+    'constraint':'2',#L2 norm
     'eps':0.125,#Change from [0,1/16,1/4,1/2,1] to generate R - Robustified test sets
     'step_size': 0.05,
     'iterations': 400, 
@@ -106,7 +105,7 @@ for batch_ize,(img,targt) in enumerate(test_loader):
     target, xadv = model(im_n.cuda(), rep.clone(), make_adv=True, **kwargs) # Image inversion using PGD
 			   
     if batch_ize%10 == 0:
-        ch.save((xadv.cpu(),target.cpu()),"./cifar"+str(batch_ize)+".pt")
+        ch.save((xadv.cpu(),target.cpu()),"./Robustified_test_sets/cifar"+str(batch_ize)+".pt")
 
     # Visualize inversion
     show_image_row([im.cpu(), im_n.cpu(), xadv.detach().cpu()], 
