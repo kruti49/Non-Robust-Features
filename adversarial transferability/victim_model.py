@@ -34,6 +34,7 @@ args, unknown = parser.parse_known_args()
 
 best_acc = 0  # best test accuracy
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
+r_test_set_data = False
 
 transform_train = transforms.Compose([
     transforms.ToTensor(),
@@ -70,6 +71,16 @@ test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False, download
 #Dataloader
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=200, shuffle=True, num_workers=4)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=100, shuffle=False, num_workers=4)
+
+if os.path.exists('./Robustified_test_sets/r_test_set.pt'):
+	#R DataLoader
+	img,trg = ch.load("./Robustified_test_sets/r_test_set.pt")
+	r_data = TensorDataset(img.float()/255, trg)
+	r_test_loader = torch.utils.data.DataLoader(r_data, batch_size=100, shuffle=False, num_workers=4)
+	r_test_set_data = True
+else:
+	print('Error: no test set found! Please create test set first')
+	r_test_set_data = False
 
 #Pretrained models
 
@@ -123,14 +134,14 @@ def train(epoch):
     print('\nTrain Accuarcy:', 100. *correct / total)
     print('\nTrain Loss:', train_loss)
 
-def test(epoch):
+def test(epoch,loader):
     global best_acc
     print('\n[ Test Epoch: %d ]' % epoch)
     model.eval()
     test_correct = 0
     total = 0
     with torch.no_grad():
-      for batch_idx, (inputs, targets) in enumerate(test_loader):
+      for batch_idx, (inputs, targets) in enumerate(loader):
           inputs, targets = inputs.to(device), targets.to(device)
           total += targets.size(0)
 
@@ -176,5 +187,12 @@ def lr_scheduler(optimizer, epoch):
 for epoch in range(start_epoch, 100):
     #lr_scheduler(optimizer,epoch)
     train(epoch)
-    test(epoch)
+    test(epoch,test_loader)
     scheduler.step()
+	
+if r_test_set_data:
+	#R Test
+	for epoch in range(start_epoch, 100):
+		#lr_scheduler(optimizer,epoch)
+		train(epoch)
+		test(epoch,r_test_loader)
