@@ -105,7 +105,7 @@ for batch_ize,(img,targt) in enumerate(test_loader):
     target, xadv = model(im_n.cuda(), rep.clone(), make_adv=True, **kwargs) # Image inversion using PGD
 			   
     if batch_ize%10 == 0:
-        ch.save((xadv.cpu(),target.cpu()),"./Robustified_test_sets/cifar"+str(batch_ize)+".pt")
+        ch.save((xadv.cpu(),target.cpu()),"./Robustified_test_sets/r_test_set.pt")
 
     # Visualize inversion
     show_image_row([im.cpu(), im_n.cpu(), xadv.detach().cpu()], 
