@@ -103,7 +103,7 @@ for batch_ize,(img,targt) in enumerate(test_loader):
 
     im_n = ch.randn_like(im) / NOISE_SCALE + 0.5 # Seed for inversion (x_0)
 
-    target, xadv = model(im_n.cuda(), rep.clone(), make_adv=True, **kwargs) # Image inversion using PGD
+    _, xadv = model(im_n.cuda(), rep.clone(), make_adv=True, **kwargs) # Image inversion using PGD
 
     # Visualize inversion
     show_image_row([im.cpu(), im_n.cpu(), xadv.detach().cpu()], 
