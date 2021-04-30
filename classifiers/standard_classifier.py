@@ -28,6 +28,7 @@ args, unknown = parser.parse_known_args()
 
 best_acc = 0  # best test accuracy
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
+r_test_set_data = False
 
 
 #Data Augmentation
@@ -71,6 +72,36 @@ test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False, download
 #Dataloader
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=200, shuffle=True, num_workers=4)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=100, shuffle=False, num_workers=4)
+
+if os.path.exists('./Robustified_test_sets/r_test_set.pt'):
+	#R DataLoader
+	img,trg = ch.load("./Robustified_test_sets/r_test_set.pt")
+	r_data = TensorDataset(img.float()/255, trg)
+	r_test_loader = torch.utils.data.DataLoader(r_data, batch_size=100, shuffle=False, num_workers=4)
+	r_test_set_data = True
+else:
+	print('Error: no test set found! Please create test set first')
+	r_test_set_data = False
+	
+'''#R01 DataLoader
+img1,trg1 = ch.load("./Robustified_test_sets/rzone_test_set.pt")
+rzone_data = TensorDataset(img1.float()/255, trg1)
+rzone_test_loader = torch.utils.data.DataLoader(rzone_data, batch_size=100, shuffle=False, num_workers=4)
+
+#R02 DataLoader
+img2,trg2 = ch.load("./Robustified_test_sets/rztwo_test_set.pt")
+rztwo_data = TensorDataset(img2.float()/255, trg2)
+rztwo_test_loader = torch.utils.data.DataLoader(rztwo_data, batch_size=100, shuffle=False, num_workers=4)
+
+#R05 DataLoader
+img3,trg3 = ch.load("./Robustified_test_sets/rzfive_test_set.pt")
+rzfive_data = TensorDataset(img3.float()/255, trg3)
+rzfive_test_loader = torch.utils.data.DataLoader(rzfive_data, batch_size=100, shuffle=False, num_workers=4)
+
+#R1 DataLoader
+img4,trg4 = ch.load("./Robustified_test_sets/rone_test_set.pt")
+rone_data = TensorDataset(img4.float()/255, trg4)
+rone_test_loader = torch.utils.data.DataLoader(rone_data, batch_size=100, shuffle=False, num_workers=4)'''
 
 #model
 model = ResNet50()
@@ -119,14 +150,14 @@ def train(epoch):
     print('\nTrain Accuarcy:', 100. *correct / total)
     print('\nTrain Loss:', train_loss)
 
-def test(epoch):
+def test(epoch,loader):
     global best_acc
     print('\n[ Test Epoch: %d ]' % epoch)
     model.eval()
     test_correct = 0
     total = 0
     with torch.no_grad():
-      for batch_idx, (inputs, targets) in enumerate(test_loader):
+      for batch_idx, (inputs, targets) in enumerate(loader):
           inputs, targets = inputs.to(device), targets.to(device)
           total += targets.size(0)
 
@@ -172,5 +203,38 @@ def lr_scheduler(optimizer, epoch):
 for epoch in range(start_epoch, 100):
     #lr_scheduler(optimizer,epoch)
     train(epoch)
-    test(epoch)
+    test(epoch,test_loader)
     scheduler.step()
+	
+if r_test_set_data:
+	#R Test
+	for epoch in range(start_epoch, 100):
+		#lr_scheduler(optimizer,epoch)
+		train(epoch)
+		test(epoch,r_test_loader)
+else:
+	pass
+	
+'''#R01 Test
+for epoch in range(start_epoch, 100):
+    #lr_scheduler(optimizer,epoch)
+    train(epoch)
+    test(epoch,rzone_test_loader)
+	
+#R02 Test
+for epoch in range(start_epoch, 100):
+    #lr_scheduler(optimizer,epoch)
+    train(epoch)
+    test(epoch,rztwo_test_loader)
+	
+#R05 Test
+for epoch in range(start_epoch, 100):
+    #lr_scheduler(optimizer,epoch)
+    train(epoch)
+    test(epoch,rzfive_test_loader)
+	
+#R1 Test
+for epoch in range(start_epoch, 100):
+    #lr_scheduler(optimizer,epoch)
+    train(epoch)
+    test(epoch,rone_test_loader)'''
