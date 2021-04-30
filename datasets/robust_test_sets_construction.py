@@ -111,4 +111,3 @@ for batch_ize,(img,targt) in enumerate(test_loader):
                fontsize=22)
 			   
     save_image(xadv.cpu(),"./R_test_sets/cifar"+str(batch_ize)+".png")
-    ch.save((xadv.cpu(),target.cpu()),"./R_test_sets/cifar"+str(batch_ize)+".pt")
