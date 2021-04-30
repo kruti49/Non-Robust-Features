@@ -103,11 +103,12 @@ for batch_ize,(img,targt) in enumerate(test_loader):
 
     im_n = ch.randn_like(im) / NOISE_SCALE + 0.5 # Seed for inversion (x_0)
 
-    _, xadv = model(im_n.cuda(), rep.clone(), make_adv=True, **kwargs) # Image inversion using PGD
+    target, xadv = model(im_n.cuda(), rep.clone(), make_adv=True, **kwargs) # Image inversion using PGD
+			   
+    if batch_ize%10 == 0:
+        ch.save((xadv.cpu(),target.cpu()),"./cifar"+str(batch_ize)+".pt")
 
     # Visualize inversion
     show_image_row([im.cpu(), im_n.cpu(), xadv.detach().cpu()], 
                ["Original", r"Seed ($x_0$)", "Result"], 
                fontsize=22)
-			   
-    save_image(xadv.cpu(),"./R_test_sets/cifar"+str(batch_ize)+".png")
