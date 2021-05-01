@@ -92,6 +92,7 @@ for batch_ize,(img,targt) in enumerate(test_loader):
 
     im_n = ch.randn_like(im) / NOISE_SCALE + 0.5 # Seed for inversion (x_0)
 
+    #images with robust features
     _, xadv = model(im_n.cuda(), rep.clone(), make_adv=True, **kwargs) # Image inversion using PGD
 			   
     if batch_ize%10 == 0:
