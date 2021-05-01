@@ -65,14 +65,6 @@ _, test_loader = dataset.make_loaders(workers=NUM_WORKERS,
                                       data_aug=False)
 data_iterator = enumerate(test_loader)
 
-#Load model from checkpoint
-model_kwargs = {
-    'arch': 'resnet50',
-    'dataset': dataset,
-    'resume_path': f'./checkpoint/robustifiedckpt.pt'
-}
-
-model, _ = model_utils.make_and_restore_model(**model_kwargs)
 model.eval()
 
 # Custom loss for inversion
