@@ -19,7 +19,7 @@ from robustness.tools.vis_tools import show_image_row, show_image_column
 %matplotlib inline
 
 DATA_PATH_DICT = {'CIFAR': './cifar10'}
-DATA = 'CIFAR' # Choices: ['CIFAR', 'ImageNet', 'RestrictedImageNet']
+DATA = 'CIFAR' 
 NUM_WORKERS = 4
 NOISE_SCALE = 20
 OUT_DIR = './outputs/'
@@ -57,10 +57,8 @@ train_args = defaults.check_and_fill_args(train_args,
 # Train a model
 train.train_model(train_args, model, (train_loader, test_loader), store=out_store)
 
-# Load dataset
-dataset_function = getattr(datasets, DATA)
-dataset = dataset_function(DATA_PATH_DICT[DATA])
-_, test_loader = dataset.make_loaders(workers=NUM_WORKERS, 
+# Load test set without data augmentation
+_, test_loader = ds.make_loaders(workers=NUM_WORKERS, 
                                       batch_size=BATCH_SIZE, 
                                       data_aug=False)
 data_iterator = enumerate(test_loader)
