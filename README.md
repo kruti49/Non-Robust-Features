@@ -2,6 +2,8 @@
 
 <b>Adversarial Vulnerability and Transferability : Non-Robust Features</b>
 
+<b>Refrence Paper: </b> [Adversarial Perturbations Are Not So Weird: Entanglement of Robust and Non-Robust Features in Neural Network Classifiers](https://arxiv.org/pdf/2102.05110)
+
 Here, we will learn the nature of Non-robust features in context of adversarial vulnerability and adversarial transferability. By following the Ilyas definition of Robust and Non-robust features,which is as follow:
 
 A feature f is useful for a dataset D when there exists a ρ > 0 such that,
